@@ -89,8 +89,7 @@ install_node_red() {
   confirm_reinstall nodered "Node-RED" || return
 
   # Telepítjük a Node.js-t és a Node-RED-et
-  # Az új Node.js verzió beállítása (16.x vagy 18.x)
-  curl -sL https://deb.nodesource.com/setup_16.x | bash -  # Vagy választható 18.x
+  curl -sL https://deb.nodesource.com/setup_16.x | bash -  # Választható 16.x vagy 18.x
   apt install -y nodejs
 
   # Frissítjük az npm csomagkezelőt
@@ -202,7 +201,7 @@ while true; do
   echo "(↑ ↓ mozgat, Enter választ)"
   echo ""
 
-  # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e
+  # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e (kivéve a "Minden telepítése" és "Kilépés" menüpontokat)
   if $(check_all_installed); then
     menu+=( "✨ Extra" )  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
   else
