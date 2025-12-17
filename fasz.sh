@@ -153,18 +153,6 @@ BLUE=$(tput setaf 4)
 RESET=$(tput sgr0)
 BOLD=$(tput bold)
 
-# A szolgáltatások állapotának ellenőrzése
-check_all_installed() {
-  installed=true
-  for i in apache2 openssh-server mariadb-server mosquitto nodered.service; do
-    if ! service_installed $i; then
-      installed=false
-      break
-    fi
-  done
-  echo $installed
-}
-
 # A menü frissítése minden ciklusban
 while true; do
   clear
@@ -213,10 +201,11 @@ while true; do
         6) break ;;
       esac
 
-      # Ha mindent telepítettünk, kérdezd meg a felhasználót
-      if $(check_all_installed); then
-        echo "Minden telepítve van!"
-        echo "Válasszon:"
+      # Miután lefutott a "Minden telepítése", felajánljuk a választási lehetőségeket
+      if [ $poz -eq 5 ]; then
+        clear
+        echo "Minden telepítés sikeresen lefutott!"
+        echo "Válasszon az alábbiak közül:"
         echo "1: Francia forradalom kiírása"
         echo "2: Vissza a menübe"
         read -p "Választás: " choice
