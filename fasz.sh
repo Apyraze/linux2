@@ -92,6 +92,17 @@ install_node_red() {
   systemctl start nodered.service
 }
 
+### ÚJ FUNKCIÓ: MINDEN TELEPÍTÉSE ###
+
+install_all() {
+  install_apache
+  install_php
+  install_ssh
+  install_mariadb
+  install_mosquitto
+  install_node_red
+}
+
 ### FRANCIA FORRADALOM KIÍRÁSA ###
 
 french_civil_war() {
@@ -129,6 +140,7 @@ menu=(
 "🛢 MariaDB"
 "📡 Mosquitto MQTT"
 "🧠 Node-RED"
+"⚙️  Minden telepítése"  # Új menüpont
 "❌ Kilépés"
 )
 
@@ -176,7 +188,8 @@ while true; do
         2) install_mariadb ;;
         3) install_mosquitto ;;
         4) install_node_red ;;
-        5) break ;;
+        5) install_all ;;  # Az új menüpont kezelés
+        6) break ;;
       esac
       read -p "Enter a visszalépéshez..."
       ;;
@@ -187,6 +200,7 @@ while true; do
 done
 
 ### VÉGELLENŐRZÉS ###
+
 check_ok apache2
 check_ok ssh
 check_ok mariadb
