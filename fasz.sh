@@ -87,7 +87,30 @@ install_node_red() {
     apt install -y curl
   fi
   confirm_reinstall nodered "Node-RED" || return
-  curl -fsSL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered | bash
+
+  # Telepítjük a Node.js-t és a Node-RED-et
+  curl -sL https://deb.nodesource.com/setup_16.x | bash -
+  apt install -y nodejs
+  npm install -g --unsafe-perm node-red
+
+  # Létrehozzuk a systemd szolgáltatást
+  echo "[Unit]
+Description=Node-RED
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/node-red
+WorkingDirectory=/root
+User=root
+Group=root
+Restart=always
+Environment=\"NODE_OPTIONS=--max_old_space_size=256\"
+
+[Install]
+WantedBy=multi-user.target" > /etc/systemd/system/nodered.service
+
+  # Engedélyezés és indítás
+  systemctl daemon-reload
   systemctl enable nodered.service
   systemctl start nodered.service
 }
@@ -140,34 +163,43 @@ menu=(
 "🛢 MariaDB"
 "📡 Mosquitto MQTT"
 "🧠 Node-RED"
-"⚙️  Minden telepítése"  # Új menüpont
+"⚙️  Minden telepítése"
 "❌ Kilépés"
 )
 
 poz=0
 
+# Színek és stílusok
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+RESET=$(tput sgr0)
+BOLD=$(tput bold)
+
 while true; do
   clear
-  echo "=== Telepítő menü ==="
+  echo "${BOLD}${BLUE}=== Telepítő menü ===${RESET}"
   echo "(↑ ↓ mozgat, Enter választ)"
   echo ""
 
   for i in "${!menu[@]}"; do
     blink=""
+    status=""
     reset=$(tput sgr0)
 
     case $i in
-      0) service_installed apache2 || blink=$(tput blink) ;;
-      1) service_installed ssh || blink=$(tput blink) ;;
-      2) service_installed mariadb || blink=$(tput blink) ;;
-      3) service_installed mosquitto || blink=$(tput blink) ;;
-      4) service_installed nodered.service || blink=$(tput blink) ;;
+      0) service_installed apache2 && status="${RED}TELEPÍTVE${RESET}" || blink=$(tput blink) ;;
+      1) service_installed ssh && status="${RED}TELEPÍTVE${RESET}" || blink=$(tput blink) ;;
+      2) service_installed mariadb && status="${RED}TELEPÍTVE${RESET}" || blink=$(tput blink) ;;
+      3) service_installed mosquitto && status="${RED}TELEPÍTVE${RESET}" || blink=$(tput blink) ;;
+      4) service_installed nodered.service && status="${RED}TELEPÍTVE${RESET}" || blink=$(tput blink) ;;
     esac
 
     if [ $i -eq $poz ]; then
-      echo "> ${blink}${menu[$i]}${reset}"
+      echo "> ${blink}${menu[$i]} ${status}${reset}"
     else
-      echo "  ${blink}${menu[$i]}${reset}"
+      echo "  ${blink}${menu[$i]} ${status}${reset}"
     fi
   done
 
@@ -188,7 +220,7 @@ while true; do
         2) install_mariadb ;;
         3) install_mosquitto ;;
         4) install_node_red ;;
-        5) install_all ;;  # Az új menüpont kezelés
+        5) install_all ;; 
         6) break ;;
       esac
       read -p "Enter a visszalépéshez..."
