@@ -215,9 +215,11 @@ while true; do
 
       # Ha mindent telepítettünk, kérdezd meg a felhasználót
       if $(check_all_installed); then
+        echo "Minden telepítve van!"
+        echo "Válasszon:"
         echo "1: Francia forradalom kiírása"
         echo "2: Vissza a menübe"
-        read -p "Válassz egy lehetőséget: " choice
+        read -p "Választás: " choice
         case $choice in
           1) french_civil_war ;;
           2) continue ;;
