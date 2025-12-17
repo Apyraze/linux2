@@ -89,7 +89,7 @@ install_node_red() {
   confirm_reinstall nodered "Node-RED" || return
 
   # Telepítjük a Node.js-t és a Node-RED-et
-  curl -sL https://deb.nodesource.com/setup_16.x | bash -  # Választható 16.x vagy 18.x
+  curl -sL https://deb.nodesource.com/setup_20.x | bash -  # Választható 16.x vagy 18.x
   apt install -y nodejs
 
   # Frissítjük az npm csomagkezelőt
