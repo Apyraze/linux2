@@ -89,7 +89,7 @@ install_node_red() {
   confirm_reinstall nodered "Node-RED" || return
 
   # Telepítjük a Node.js-t és a Node-RED-et
-  curl -sL https://deb.nodesource.com/setup_16.x | bash -  # Választható 16.x vagy 18.x
+  curl -sL https://deb.nodesource.com/setup_20.x | bash -  # Választható 16.x vagy 18.x
   apt install -y nodejs
 
   # Frissítjük az npm csomagkezelőt
@@ -202,11 +202,18 @@ while true; do
   echo ""
 
   # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e (kivéve a "Minden telepítése" és "Kilépés" menüpontokat)
+  menu=(
+    "🌐 Apache + PHP"
+    "🔐 SSH"
+    "🛢 MariaDB"
+    "📡 Mosquitto MQTT"
+    "🧠 Node-RED"
+    "⚙️  Minden telepítése"
+    "❌ Kilépés"
+  )
+
   if $(check_all_installed); then
-    menu+=( "✨ Extra" )  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
-  else
-    # Ha nem minden telepítve van, töröljük az "✨ Extra" menüpontot
-    menu=("${menu[@]/"✨ Extra"/}")
+    menu+=("✨ Extra")  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
   fi
 
   for i in "${!menu[@]}"; do
