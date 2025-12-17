@@ -201,22 +201,6 @@ while true; do
   echo "(↑ ↓ mozgat, Enter választ)"
   echo ""
 
-  # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e (kivéve a "Minden telepítése" és "Kilépés" menüpontokat)
-  menu=(
-    "🌐 Apache + PHP"
-    "🔐 SSH"
-    "🛢 MariaDB"
-    "📡 Mosquitto MQTT"
-    "🧠 Node-RED"
-    "⚙️  Minden telepítése"
-    "❌ Kilépés"
-  )
-
-  # Ha minden telepítve van, hozzáadjuk az "✨ Extra" menüpontot
-  if $(check_all_installed); then
-    menu+=("✨ Extra")
-  fi
-
   for i in "${!menu[@]}"; do
     blink=""
     status=""
@@ -256,8 +240,11 @@ while true; do
         4) install_node_red ;;
         5) install_all ;;
         6) break ;;
-        7) french_civil_war ;;  # Extra menüpont: Francia forradalom kiírása
       esac
+      # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e
+      if $(check_all_installed); then
+        french_civil_war
+      fi
       ;;
   esac
 
