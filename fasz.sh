@@ -189,6 +189,7 @@ check_all_installed() {
   echo $installed
 }
 
+# A menü frissítése minden ciklusban
 while true; do
   clear
   echo "${BOLD}${BLUE}=== Telepítő menü ===${RESET}"
@@ -196,8 +197,17 @@ while true; do
   echo ""
 
   # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e
+  extra_menu_added=false
   if $(check_all_installed); then
-    menu+=( "✨ Extra" )  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
+    if [[ ! " ${menu[@]} " =~ "✨ Extra" ]]; then
+      menu+=( "✨ Extra" )  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
+      extra_menu_added=true
+    fi
+  else
+    # Ha valami nincs telepítve, töröljük az "✨ Extra" menüpontot
+    if [[ " ${menu[@]} " =~ "✨ Extra" ]]; then
+      menu=("${menu[@]/"✨ Extra"/}")
+    fi
   fi
 
   for i in "${!menu[@]}"; do
