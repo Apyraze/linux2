@@ -177,11 +177,28 @@ BLUE=$(tput setaf 4)
 RESET=$(tput sgr0)
 BOLD=$(tput bold)
 
+# A szolgáltatások állapotának ellenőrzése
+check_all_installed() {
+  installed=true
+  for i in apache2 openssh-server mariadb-server mosquitto nodered.service; do
+    if ! service_installed $i; then
+      installed=false
+      break
+    fi
+  done
+  echo $installed
+}
+
 while true; do
   clear
   echo "${BOLD}${BLUE}=== Telepítő menü ===${RESET}"
   echo "(↑ ↓ mozgat, Enter választ)"
   echo ""
+
+  # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e
+  if $(check_all_installed); then
+    menu+=( "✨ Extra" )  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
+  fi
 
   for i in "${!menu[@]}"; do
     blink=""
@@ -220,27 +237,13 @@ while true; do
         2) install_mariadb ;;
         3) install_mosquitto ;;
         4) install_node_red ;;
-        5) install_all ;; 
+        5) install_all ;;
         6) break ;;
+        7) french_civil_war ;;  # Extra menüpont: Francia forradalom kiírása
       esac
-      read -p "Enter a visszalépéshez..."
       ;;
   esac
 
   if [ $poz -lt 0 ]; then poz=$((${#menu[@]}-1)); fi
   if [ $poz -ge ${#menu[@]} ]; then poz=0; fi
 done
-
-### VÉGELLENŐRZÉS ###
-
-check_ok apache2
-check_ok ssh
-check_ok mariadb
-check_ok mosquitto
-check_ok nodered.service
-
-if $all_ok; then
-  french_civil_war
-else
-  echo "⚠️ Nem minden szolgáltatás fut – események nem jelennek meg"
-fi
