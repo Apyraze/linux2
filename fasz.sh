@@ -83,39 +83,10 @@ install_mosquitto() {
 }
 
 install_node_red() {
-  if ! command -v curl >/dev/null; then
-    apt install -y curl
-  fi
-  confirm_reinstall nodered "Node-RED" || return
-
-  # Telepítjük a Node.js-t és a Node-RED-et
-  curl -sL https://deb.nodesource.com/setup_20.x | bash -  # Választható 16.x vagy 18.x
+  # Az újabb Node-RED telepítési módszer
+  curl -sL https://deb.nodesource.com/setup_16.x | bash -
   apt install -y nodejs
-
-  # Frissítjük az npm csomagkezelőt
-  npm install -g npm@latest
-  
-  # Telepítjük a Node-RED-et a legújabb verzióval
   npm install -g --unsafe-perm node-red
-
-  # Létrehozzuk a systemd szolgáltatást
-  echo "[Unit]
-Description=Node-RED
-After=network.target
-
-[Service]
-ExecStart=/usr/local/bin/node-red
-WorkingDirectory=/root
-User=root
-Group=root
-Restart=always
-Environment=\"NODE_OPTIONS=--max_old_space_size=256\"
-
-[Install]
-WantedBy=multi-user.target" > /etc/systemd/system/nodered.service
-
-  # Engedélyezés és indítás
-  systemctl daemon-reload
   systemctl enable nodered.service
   systemctl start nodered.service
 }
@@ -241,9 +212,17 @@ while true; do
         5) install_all ;;
         6) break ;;
       esac
-      # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e
+
+      # Ha mindent telepítettünk, kérdezd meg a felhasználót
       if $(check_all_installed); then
-        french_civil_war
+        echo "1: Francia forradalom kiírása"
+        echo "2: Vissza a menübe"
+        read -p "Válassz egy lehetőséget: " choice
+        case $choice in
+          1) french_civil_war ;;
+          2) continue ;;
+          *) echo "Érvénytelen választás." ;;
+        esac
       fi
       ;;
   esac
