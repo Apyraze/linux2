@@ -129,6 +129,8 @@ french_civil_war() {
   echo
   echo "================================================="
   echo "✔ Minden szolgáltatás sikeresen fut"
+  echo ""
+  read -p "ENTER a visszalépéshez a menübe..."
 }
 
 ### MENÜ ###
@@ -210,8 +212,8 @@ while true; do
         echo "2: Vissza a menübe"
         read -p "Választás: " choice
         case $choice in
-          1) french_civil_war ;;
-          2) continue ;;
+          1) french_civil_war ;;  # Kiírja a francia forradalom eseményeit
+          2) continue ;;  # Vissza a főmenübe
           *) echo "Érvénytelen választás." ;;
         esac
       fi
