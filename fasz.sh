@@ -87,7 +87,7 @@ install_node_red() {
     apt install -y curl
   fi
   confirm_reinstall nodered "Node-RED" || return
-  curl -sL https://github.com/node-red/linux-installers/releases/latest/download/update-nodejs-and-nodered-deb | bash
+  curl -fsSL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered | bash
   systemctl enable nodered.service
   systemctl start nodered.service
 }
