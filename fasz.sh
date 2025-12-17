@@ -89,8 +89,14 @@ install_node_red() {
   confirm_reinstall nodered "Node-RED" || return
 
   # Telepítjük a Node.js-t és a Node-RED-et
-  curl -sL https://deb.nodesource.com/setup_16.x | bash -
+  # Az új Node.js verzió beállítása (16.x vagy 18.x)
+  curl -sL https://deb.nodesource.com/setup_16.x | bash -  # Vagy választható 18.x
   apt install -y nodejs
+
+  # Frissítjük az npm csomagkezelőt
+  npm install -g npm@latest
+  
+  # Telepítjük a Node-RED-et a legújabb verzióval
   npm install -g --unsafe-perm node-red
 
   # Létrehozzuk a systemd szolgáltatást
@@ -197,17 +203,11 @@ while true; do
   echo ""
 
   # Ellenőrizzük, hogy minden szolgáltatás telepítve van-e
-  extra_menu_added=false
   if $(check_all_installed); then
-    if [[ ! " ${menu[@]} " =~ "✨ Extra" ]]; then
-      menu+=( "✨ Extra" )  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
-      extra_menu_added=true
-    fi
+    menu+=( "✨ Extra" )  # Ha minden telepítve van, hozzáadjuk az "Extra" menüpontot
   else
-    # Ha valami nincs telepítve, töröljük az "✨ Extra" menüpontot
-    if [[ " ${menu[@]} " =~ "✨ Extra" ]]; then
-      menu=("${menu[@]/"✨ Extra"/}")
-    fi
+    # Ha nem minden telepítve van, töröljük az "✨ Extra" menüpontot
+    menu=("${menu[@]/"✨ Extra"/}")
   fi
 
   for i in "${!menu[@]}"; do
